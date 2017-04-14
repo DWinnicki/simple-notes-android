@@ -2,9 +2,10 @@ package com.winnicki.simplenotes.data;
 
 import com.winnicki.simplenotes.model.Note;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NoteList {
+public class NoteList implements Serializable {
     private ArrayList<Note> notes = new ArrayList<>();
 
     public NoteList() {
@@ -23,8 +24,16 @@ public class NoteList {
         this.notes = notes;
     }
 
+    public int size() {
+        return notes.size();
+    }
+
     public void add(Note note) {
         notes.add(note);
+    }
+
+    public Note get(int i) {
+        return notes.get(i);
     }
 
     public void remove(Note note) {

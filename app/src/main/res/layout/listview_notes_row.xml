@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/text_note"/>
+
+    <TextView
+        android:text="Title of Note"
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:textSize="20sp"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+        <TextView
+            android:text="Apr. 17 2017"
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/passwordProtected"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/passwordProtected"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/arrow"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/password"/>
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:alpha="0.5"
+            android:src="@drawable/arrow"/>
+    </RelativeLayout>
+</LinearLayout>

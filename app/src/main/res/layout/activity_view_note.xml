@@ -5,5 +5,73 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.winnicki.simplenotes.ViewNoteActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+        <ImageView
+            android:id="@+id/buttonBack"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_weight="0.5"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/arrow"
+            android:rotation="180"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            android:text="Text Note"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_menu_delete"/>
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:layout_margin="18dp"/>
+
+        <Switch
+            android:id="@+id/passwordProtected"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:text="Password Protection: " />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:text="Created Jan 20, 2013"/>
+    </LinearLayout>
 </LinearLayout>

@@ -8,6 +8,7 @@ public class Authentication {
     private String question;
     private String answer;
     private String password;
+    //private Note note;
 
     public Authentication(String question, String answer, String password) {
         this.question = question;
