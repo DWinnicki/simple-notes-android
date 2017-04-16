@@ -3,29 +3,34 @@ package com.winnicki.simplenotes.model;
 import com.winnicki.simplenotes.data.EnumNoteType;
 
 public class TextNote extends Note {
-    private String text;
+    private String content;
 
     public TextNote() {
         super(EnumNoteType.TEXT);
-        this.text = "Undefined";
+        this.content = "Undefined";
     }
 
-    public TextNote(int id, String title, String text) {
+    public TextNote(String title, String content) {
+        super(title, EnumNoteType.TEXT);
+        this.content = content;
+    }
+
+    public TextNote(int id, String title, String content) {
         super(id, title, EnumNoteType.TEXT);
-        this.text = text;
+        this.content = content;
     }
 
-    public String getText() {
-        return text;
+    public String getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return super.toString() +
-                "\nText: " + text + '\n';
+                "\nText: " + content + '\n';
     }
 }

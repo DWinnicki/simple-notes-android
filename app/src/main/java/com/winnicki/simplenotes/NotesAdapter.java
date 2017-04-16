@@ -1,7 +1,7 @@
 package com.winnicki.simplenotes;
 
 import android.content.Context;
-import android.text.format.DateFormat;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +13,19 @@ import com.winnicki.simplenotes.model.Note;
 
 import java.util.ArrayList;
 
-/**
- * Created by winnicki on 2017-04-14.
- */
 
-public class NotesAdapter extends ArrayAdapter<Note> {
+class NotesAdapter extends ArrayAdapter<Note> {
 
     private ArrayList<Note> notes;
 
-    public NotesAdapter(Context context, ArrayList<Note> notes) {
+    NotesAdapter(Context context, ArrayList<Note> notes) {
         super(context, 0, notes);
         this.notes = notes;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         // Get the data item for this position
         Note note = notes.get(position);
@@ -40,13 +38,13 @@ public class NotesAdapter extends ArrayAdapter<Note> {
         // Lookup view for data population
         ImageView icon = (ImageView)convertView.findViewById(R.id.icon) ;
         TextView title = (TextView)convertView.findViewById(R.id.title);
-        TextView date = (TextView)convertView.findViewById(R.id.date);
+        TextView date = (TextView)convertView.findViewById(R.id.createDate);
         ImageView passwordProtected = (ImageView)convertView.findViewById(R.id.passwordProtected);
 
         // Populate the data into the template view using the data object
         icon.setImageResource(note.getIcon());
         title.setText(note.getTitle());
-        date.setText(note.getDate());
+        date.setText(note.getCreateDate());
         if(note.isPasswordProtected()) {
             passwordProtected.setImageResource(R.drawable.password);
         } else {

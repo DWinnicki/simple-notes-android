@@ -1,31 +1,28 @@
 package com.winnicki.simplenotes.model;
 
-import android.text.format.DateFormat;
-
 import com.winnicki.simplenotes.R;
+import com.winnicki.simplenotes.data.Constants;
 import com.winnicki.simplenotes.data.EnumNoteType;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
-
-/**
- * Created by winnicki on 2017-04-12.
- */
 
 public class Note implements Serializable{
     private int id;
     private String title;
     private EnumNoteType type;
     private boolean passwordProtected;
-    private Date date;
+    private String createDate;
     private int icon;
 
     public Note() {
         this.id = -1;
-        this.title = "Undefine";
+        this.title = "Undefined";
         this.type = EnumNoteType.UNDEFINED;
         this.passwordProtected = false;
-        this.date = new Date();
+        this.createDate = Constants.sqlDateFormat.format(Calendar.getInstance().getTime());
         this.icon = 0;
     }
 
@@ -34,7 +31,15 @@ public class Note implements Serializable{
         this.title = "Undefine";
         this.type = type;
         this.passwordProtected = false;
-        this.date = new Date();
+        this.createDate = Constants.sqlDateFormat.format(Calendar.getInstance().getTime());
+        this.icon = getIcon();
+    }
+
+    public Note(String title, EnumNoteType type) {
+        this.id = -1;
+        this.title = title;
+        this.type = type;
+        this.createDate = Constants.sqlDateFormat.format(Calendar.getInstance().getTime());
         this.icon = getIcon();
     }
 
@@ -42,7 +47,7 @@ public class Note implements Serializable{
         this.id = id;
         this.title = title;
         this.type = type;
-        this.date = new Date();
+        this.createDate = Constants.sqlDateFormat.format(Calendar.getInstance().getTime());
         this.icon = getIcon();
     }
 
@@ -79,12 +84,18 @@ public class Note implements Serializable{
         this.passwordProtected = passwordProtected;
     }
 
-    public String getDate() {
-        return DateFormat.format("MMM. dd yyyy", date).toString();
+    public String getCreateDate() {
+        Date date = null;
+        try {
+            date = Constants.sqlDateFormat.parse(createDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return Constants.noteDateFormat.format(date);
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 
     public int getIcon() {
@@ -106,7 +117,7 @@ public class Note implements Serializable{
         return icon;
     }
 
-    public void setIcon(int icon) {
+    private void setIcon(int icon) {
         this.icon = icon;
     }
 
@@ -116,7 +127,7 @@ public class Note implements Serializable{
                 "\nTitle: " + title +
                 "\nType: " + type +
                 "\nPassword Protected? " + (passwordProtected ? "Yes" : "No") +
-                "\nCreation Date: " + date +
+                "\nCreation Date: " + createDate +
                 "\nIcon: " + icon;
     }
 }

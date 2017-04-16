@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Simple Notes</string>
+    <string name="icon">icon</string>
+    <string name="password">password</string>
+    <string name="arrow">arrow</string>
+    <string name="text_note">Text Note</string>
+    <string name="delete">delete</string>
+    <string name="password_protection">Password Protection:</string>
 </resources>

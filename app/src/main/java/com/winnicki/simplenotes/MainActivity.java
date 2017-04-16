@@ -1,19 +1,17 @@
 package com.winnicki.simplenotes;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TabHost;
 
-import com.winnicki.simplenotes.data.Constants;
 import com.winnicki.simplenotes.data.NoteList;
-import com.winnicki.simplenotes.model.Note;
-import com.winnicki.simplenotes.model.TextNote;
+import com.winnicki.simplenotes.database.SimpleNotesDbHelper;
 
 import java.io.Serializable;
 
@@ -23,12 +21,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button buttonAddNote;
     ListView listViewAll;
 
-    NoteList noteList = createNoteList();
+    NoteList noteList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SimpleNotesDbHelper simpleNotesDbHelper = new SimpleNotesDbHelper(this);
+
+        noteList = simpleNotesDbHelper.getAllTextNotes();
+
         initialize();
     }
 
@@ -85,18 +88,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         listViewAll.setOnItemClickListener(this);
         NotesAdapter adapter = new NotesAdapter(this, noteList.getNotes());
         listViewAll.setAdapter(adapter);
-    }
-
-    public NoteList createNoteList() {
-        NoteList noteList = new NoteList();
-        for(int i = 1; i < 6; i++) {
-            Note note = new TextNote(i, "Text " + i, Constants.SHORT_TEXT);
-            if((i % 3) == 0) {
-                note.setPasswordProtected(true);
-            }
-            noteList.add(note);
-        }
-        return noteList;
     }
 
     @Override

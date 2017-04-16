@@ -1,8 +1,7 @@
 package com.winnicki.simplenotes;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -27,7 +26,7 @@ public class ViewNoteActivity extends AppCompatActivity implements Switch.OnChec
     public void initialize() {
         title = (TextView)findViewById(R.id.title);
         content = (TextView)findViewById(R.id.content);
-        date = (TextView)findViewById(R.id.date);
+        date = (TextView)findViewById(R.id.createDate);
         passwordProtection = (Switch)findViewById(R.id.passwordProtected);
 
         Bundle bundle = getIntent().getExtras();
@@ -36,8 +35,8 @@ public class ViewNoteActivity extends AppCompatActivity implements Switch.OnChec
 
         if (textNote != null) {
             title.setText(textNote.getTitle());
-            content.setText(textNote.getText());
-            date.setText(textNote.getDate());
+            content.setText(textNote.getContent());
+            date.setText(textNote.getCreateDate());
             if (textNote.isPasswordProtected()) {
                 passwordProtection.setChecked(true);
             }

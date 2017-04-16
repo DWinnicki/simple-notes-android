@@ -10,10 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/text_note"/>
+        android:src="@drawable/text_note"
+        android:contentDescription="@string/icon"/>
 
     <TextView
-        android:text="Title of Note"
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -27,8 +27,7 @@
         android:layout_height="match_parent"
         android:layout_weight="3">
         <TextView
-            android:text="Apr. 17 2017"
-            android:id="@+id/date"
+            android:id="@+id/createDate"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toStartOf="@+id/passwordProtected"
@@ -39,8 +38,9 @@
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:layout_toStartOf="@+id/arrow"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/password"/>
+            android:layout_marginStart="5dp"
+            android:src="@drawable/password"
+            android:contentDescription="@string/password"/>
 
         <ImageView
             android:id="@+id/arrow"
@@ -48,6 +48,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:alpha="0.5"
-            android:src="@drawable/arrow"/>
+            android:src="@drawable/arrow"
+            android:contentDescription="@string/arrow"/>
     </RelativeLayout>
 </LinearLayout>
