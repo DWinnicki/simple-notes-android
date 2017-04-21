@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.winnicki.simplenotes.data.Constants;
 import com.winnicki.simplenotes.data.EnumNoteType;
 import com.winnicki.simplenotes.data.NoteList;
+import com.winnicki.simplenotes.model.Note;
 import com.winnicki.simplenotes.model.TextNote;
 
 import java.util.Calendar;
@@ -85,6 +86,19 @@ public class SimpleNotesDbHelper extends SQLiteOpenHelper {
         contentValues.put(NotesEntry.COLUMN_ID, _id);
         contentValues.put(NotesEntry.COLUMN_TYPE_NAME, type_name);
         db.insert(NotesEntry.TABLE_NOTE_TYPES, null, contentValues);
+        return true;
+    }
+
+    public boolean deleteTextNote(TextNote textNote) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(NotesEntry.TABLE_NOTES, NotesEntry.COLUMN_ID + "=" + textNote.getId(), null) > 0;
+    }
+
+    public boolean changePasswordProtection(Note note, Boolean passwordProtected) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NotesEntry.COLUMN_PASSWORD_PROTECTED, passwordProtected);
+        db.update(NotesEntry.TABLE_NOTES, contentValues, NotesEntry.COLUMN_ID + "=" + note.getId(), null);
         return true;
     }
 

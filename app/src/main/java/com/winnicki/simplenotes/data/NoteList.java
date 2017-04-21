@@ -1,6 +1,9 @@
 package com.winnicki.simplenotes.data;
 
+import android.os.NetworkOnMainThreadException;
+
 import com.winnicki.simplenotes.model.Note;
+import com.winnicki.simplenotes.model.TextNote;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +21,22 @@ public class NoteList implements Serializable {
 
     public ArrayList<Note> getNotes() {
         return notes;
+    }
+
+    public ArrayList<Note> getTextNotes() {
+        return search(EnumNoteType.TEXT).getNotes();
+    }
+
+    public ArrayList<Note> getPhotoNotes() {
+        return search(EnumNoteType.PHOTO).getNotes();
+    }
+
+    public ArrayList<Note> getVideoNotes() {
+        return search(EnumNoteType.VIDEO).getNotes();
+    }
+
+    public ArrayList<Note> getVoiceNotes() {
+        return search(EnumNoteType.VOICE).getNotes();
     }
 
     public void setNotes(ArrayList<Note> notes) {

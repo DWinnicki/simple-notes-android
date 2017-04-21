@@ -6,22 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.winnicki.simplenotes.data.NoteList;
 import com.winnicki.simplenotes.database.SimpleNotesDbHelper;
 import com.winnicki.simplenotes.model.TextNote;
 
-import java.io.Serializable;
-
 public class CreateTextNoteActivity extends AppCompatActivity implements View.OnClickListener {
-
-    NoteList noteList;
-
     EditText title, content;
     Switch passwordProtected;
     Button save;
+    ImageView buttonBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +27,14 @@ public class CreateTextNoteActivity extends AppCompatActivity implements View.On
     }
 
     public void initialize() {
-        Bundle extra = getIntent().getExtras();
-        Serializable serializable = extra.getSerializable("noteList");
-        noteList = (NoteList) serializable;
-
         title = (EditText)findViewById(R.id.title);
         content = (EditText)findViewById(R.id.content);
         passwordProtected = (Switch)findViewById(R.id.passwordProtected);
         save = (Button)findViewById(R.id.buttonSave);
+        buttonBack = (ImageView)findViewById(R.id.buttonBack);
 
         save.setOnClickListener(this);
+        buttonBack.setOnClickListener(this);
     }
 
 
@@ -50,27 +44,32 @@ public class CreateTextNoteActivity extends AppCompatActivity implements View.On
             case R.id.buttonSave:
                 processSave();
                 break;
+            case R.id.buttonBack:
+                finish();
+                break;
         }
     }
 
     private void processSave() {
-        String titleString = title.getText().toString();
-        String contentString = content.getText().toString();
-        Boolean password = passwordProtected.isChecked();
-        TextNote note = new TextNote();
-        note.setId(noteList.size() + 1);
-        note.setTitle(titleString);
-        note.setContent(contentString);
-        note.setPasswordProtected(password);
-        noteList.add(note);
+        if(title.getText() != null && !title.getText().toString().equals("") && content.getText() != null && !content.getText().toString().equals("")) {
+            String titleString = title.getText().toString();
+            String contentString = content.getText().toString();
+            Boolean password = passwordProtected.isChecked();
 
-        SimpleNotesDbHelper simpleNotesDbHelper = new SimpleNotesDbHelper(this);
-        if(simpleNotesDbHelper.insertTextNote(titleString, contentString, password)) {
-            Toast.makeText(this, "TextNote " + title.getText().toString(), Toast.LENGTH_SHORT).show();
+            TextNote note = new TextNote();
+            note.setTitle(titleString);
+            note.setContent(contentString);
+            note.setPasswordProtected(password);
+
+            SimpleNotesDbHelper simpleNotesDbHelper = new SimpleNotesDbHelper(this);
+            if (simpleNotesDbHelper.insertTextNote(titleString, contentString, password)) {
+                Toast.makeText(this, "TextNote " + title.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Enter title and content.", Toast.LENGTH_SHORT).show();
         }
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("noteList", noteList);
-        startActivity(intent);
     }
 }

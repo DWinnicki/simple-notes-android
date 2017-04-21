@@ -5,6 +5,8 @@ import java.util.Locale;
 
 public class Constants {
 
+    public static final String password = "1234";
+
     public static final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
     public static final SimpleDateFormat noteDateFormat = new SimpleDateFormat("MMM. dd yyyy", Locale.CANADA);
 

@@ -17,8 +17,6 @@ public class SelectNoteTypeActivity extends AppCompatActivity implements View.On
 
     ImageView imageViewTextNote, imageViewPhotoNote, imageViewVideoNote, imageViewVoiceNote, buttonBack;
 
-    NoteList noteList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +36,6 @@ public class SelectNoteTypeActivity extends AppCompatActivity implements View.On
         imageViewVideoNote.setOnClickListener(this);
         imageViewVoiceNote.setOnClickListener(this);
         buttonBack.setOnClickListener(this);
-
-        Bundle extra = getIntent().getExtras();
-        Serializable serializable = extra.getSerializable("noteList");
-        noteList = (NoteList) serializable;
     }
 
     @Override
@@ -50,7 +44,6 @@ public class SelectNoteTypeActivity extends AppCompatActivity implements View.On
         switch (v.getId()) {
             case R.id.imageViewTextNote:
                 intent = new Intent(this, CreateTextNoteActivity.class);
-                intent.putExtra("noteList", noteList);
                 startActivity(intent);
                 break;
             case R.id.imageViewPhotoNote:
@@ -60,9 +53,7 @@ public class SelectNoteTypeActivity extends AppCompatActivity implements View.On
             case R.id.imageViewVoiceNote:
                 break;
             case R.id.buttonBack:
-                intent = new Intent(this, MainActivity.class);
-                intent.putExtra("noteList", noteList);
-                startActivity(intent);
+                finish();
                 break;
         }
     }
