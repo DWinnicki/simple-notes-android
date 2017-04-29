@@ -2,19 +2,23 @@ package com.winnicki.simplenotes;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.winnicki.simplenotes.data.Constants;
+import com.winnicki.simplenotes.data.EnumNoteType;
 import com.winnicki.simplenotes.data.NoteList;
 import com.winnicki.simplenotes.database.SimpleNotesDbHelper;
 import com.winnicki.simplenotes.model.Note;
@@ -35,13 +39,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     int clickedNote;
 
+    int iconsBlue[] = {
+            0,
+            R.drawable.text_note,
+            R.drawable.photo_note,
+            R.drawable.video_note,
+            R.drawable.voice_note
+    };
+
+    int iconsWhite[] = {
+            0,
+            R.drawable.text_note_white,
+            R.drawable.photo_note_white,
+            R.drawable.video_note_white,
+            R.drawable.voice_note_white
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         simpleNotesDbHelper = new SimpleNotesDbHelper(this);
-        noteList = simpleNotesDbHelper.getAllTextNotes();
+        noteList = simpleNotesDbHelper.getAllNotes();
 
         initialize();
     }
@@ -49,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        noteList = simpleNotesDbHelper.getAllTextNotes();
+        noteList = simpleNotesDbHelper.getAllNotes();
         adapter = new NotesAdapter(this, noteList.getNotes());
         listViewAll.setAdapter(adapter);
         textViewTotalNotes.setText(noteList.size() + " Notes");
@@ -66,28 +86,67 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spec.setIndicator("All");
         tabHost.addTab(spec);
 
-        TextView tabTextView = (TextView)tabHost.getTabWidget().getChildAt(0).findViewById(android.R.id.title);
-        tabTextView.setTextColor(Color.parseColor("#FFFFFF"));
-
         spec = tabHost.newTabSpec("Text");
         spec.setContent(R.id.listViewText);
-        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.text_note));
+        spec.setIndicator("", ContextCompat.getDrawable(this, iconsWhite[1]));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("Photo");
         spec.setContent(R.id.listViewPhoto);
-        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.photo_note));
+        spec.setIndicator("", ContextCompat.getDrawable(this, iconsWhite[2]));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("Video");
         spec.setContent(R.id.listViewVideo);
-        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.video_note));
+        spec.setIndicator("", ContextCompat.getDrawable(this, iconsWhite[3]));
         tabHost.addTab(spec);
 
         spec = tabHost.newTabSpec("Voice");
         spec.setContent(R.id.listViewVoice);
-        spec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.voice_note));
+        spec.setIndicator("", ContextCompat.getDrawable(this, iconsWhite[4]));
         tabHost.addTab(spec);
+
+        final View tabs[] = {
+                tabHost.getTabWidget().getChildTabViewAt(0),
+                tabHost.getTabWidget().getChildTabViewAt(1),
+                tabHost.getTabWidget().getChildTabViewAt(2),
+                tabHost.getTabWidget().getChildTabViewAt(3),
+                tabHost.getTabWidget().getChildTabViewAt(4)
+        };
+
+        TextView tabTextView = (TextView)tabs[0].findViewById(android.R.id.title);
+        tabTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        tabs[0].setBackgroundColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                int currentTab = tabHost.getCurrentTab();
+                View view = tabHost.getTabWidget().getChildAt(currentTab);
+
+                for(int i=0;i<tabs.length;i++) {
+                    if(tabs[i] == view) {
+                        tabs[i].setBackgroundColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                        ViewGroup tabIndicator = (ViewGroup) tabHost.getTabWidget().getChildTabViewAt(i);
+                        if(i != 0) {
+                            ImageView tabIndicatorImageView = (ImageView) tabIndicator.getChildAt(0);
+                            tabIndicatorImageView.setImageResource(iconsBlue[i]);
+                        }
+                        TextView tabIndicatorTextView = (TextView) tabIndicator.getChildAt(1);
+                        tabIndicatorTextView.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+                    } else {
+                        tabs[i].setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+                        ViewGroup tabIndicator = (ViewGroup) tabHost.getTabWidget().getChildTabViewAt(i);
+                        if(i != 0) {
+                            ImageView tabIndicatorImageView = (ImageView) tabIndicator.getChildAt(0);
+                            tabIndicatorImageView.setImageResource(iconsWhite[i]);
+                        }
+                        TextView tabIndicatorTextView = (TextView) tabIndicator.getChildAt(1);
+                        tabIndicatorTextView.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                    }
+                }
+            }
+        });
 
         buttonAddNote = (Button)findViewById(R.id.buttonAddNote);
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editTextPassword.setText(null);
+                textViewIncorrectPassword.setVisibility(View.INVISIBLE);
                 dialog.dismiss();
             }
         });
@@ -166,9 +227,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if(note.isPasswordProtected()) {
             dialog.show();
         } else {
-            Intent intent = new Intent(this, ViewNoteActivity.class);
-            intent.putExtra("note", noteList.get(position));
-            startActivity(intent);
+            if(noteList.get(position).getType() == EnumNoteType.TEXT) {
+                Intent intent = new Intent(this, ViewNoteActivity.class);
+                intent.putExtra("note", noteList.get(position));
+                startActivity(intent);
+            } else {
+                Toast.makeText(MainActivity.this, "No", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

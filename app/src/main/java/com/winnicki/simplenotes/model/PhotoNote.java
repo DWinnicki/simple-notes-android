@@ -2,16 +2,17 @@ package com.winnicki.simplenotes.model;
 
 import com.winnicki.simplenotes.data.EnumNoteType;
 
-/**
- * Created by winnicki on 2017-04-14.
- */
-
 public class PhotoNote extends Note {
     private int photo;
 
     public PhotoNote() {
         super(EnumNoteType.PHOTO);
         this.photo = 0;
+    }
+
+    public PhotoNote(String title, int photo) {
+        super(title, EnumNoteType.PHOTO);
+        this.photo = photo;
     }
 
     public PhotoNote(int id, String title, int photo) {

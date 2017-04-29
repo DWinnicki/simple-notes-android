@@ -6,14 +6,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.winnicki.simplenotes.R;
 import com.winnicki.simplenotes.data.Constants;
 import com.winnicki.simplenotes.data.EnumNoteType;
 import com.winnicki.simplenotes.data.NoteList;
 import com.winnicki.simplenotes.model.Note;
+import com.winnicki.simplenotes.model.PhotoNote;
 import com.winnicki.simplenotes.model.TextNote;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import static com.winnicki.simplenotes.database.SimpleNotesContract.NotesEntry;
 
@@ -47,22 +50,32 @@ public class SimpleNotesDbHelper extends SQLiteOpenHelper {
     }
 
     private void insertFakeNotes(SQLiteDatabase db) {
-        for(int i = 1; i < 6; i++) {
+        for(int i = 1; i < 11; i++) {
             TextNote textNote = new TextNote("Text Note", Constants.SHORT_TEXT);
             if((i % 3) == 0) {
                 textNote.setPasswordProtected(true);
             }
             Calendar c = Calendar.getInstance();
             c.add(Calendar.DAY_OF_MONTH, (-2 * i));
-            insertFakeTextNote(db, textNote.getTitle(), textNote.getContent(), textNote.isPasswordProtected(), c.getTime());
+            insertFakeNote(db, textNote.getTitle(), textNote.getContent(), 1 , textNote.isPasswordProtected(), c.getTime());
+        }
+
+        for(int i = 1; i < 11; i++) {
+            PhotoNote photoNote = new PhotoNote("Photo Note", R.drawable.photo_note);
+            if((i % 3) == 0) {
+                photoNote.setPasswordProtected(true);
+            }
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DAY_OF_MONTH, (-3 * i));
+            insertFakeNote(db, photoNote.getTitle(), String.valueOf(photoNote.getPhoto()), 2, photoNote.isPasswordProtected(), c.getTime());
         }
     }
 
-    private boolean insertFakeTextNote(SQLiteDatabase db, String title, String content, boolean passwordProtected, Date date) {
+    private boolean insertFakeNote(SQLiteDatabase db, String title, String content, int type, boolean passwordProtected, Date date) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(NotesEntry.COLUMN_TITLE, title);
         contentValues.put(NotesEntry.COLUMN_CONTENT, content);
-        contentValues.put(NotesEntry.COLUMN_TYPE, 1);
+        contentValues.put(NotesEntry.COLUMN_TYPE, type);
         contentValues.put(NotesEntry.COLUMN_PASSWORD_PROTECTED, passwordProtected);
         contentValues.put(NotesEntry.COLUMN_CREATED_DATE, Constants.sqlDateFormat.format(date));
         db.insert(NotesEntry.TABLE_NOTES, null, contentValues);
@@ -102,10 +115,9 @@ public class SimpleNotesDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public NoteList getAllTextNotes() {
+    public NoteList getAllNotes() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Define a projection that specifies which columns from the database you will actually use after this query.
         String[] projection = {
                 NotesEntry._ID,
                 NotesEntry.COLUMN_TITLE,
@@ -115,18 +127,13 @@ public class SimpleNotesDbHelper extends SQLiteOpenHelper {
                 NotesEntry.COLUMN_CREATED_DATE
         };
 
-        // Filter results WHERE "title" = 'My Title'
-        String selection = NotesEntry.COLUMN_TYPE + " = ?";
-        String[] selectionArgs = { "1" };
-
-        // How you want the results sorted in the resulting Cursor
         String sortOrder = NotesEntry.COLUMN_CREATED_DATE + " DESC";
 
         Cursor cursor = db.query(
                 NotesEntry.TABLE_NOTES,                   // The table to query
                 projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // The columns for the WHERE clause
+                null,                                     // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
                 sortOrder                                 // The sort order
@@ -134,14 +141,25 @@ public class SimpleNotesDbHelper extends SQLiteOpenHelper {
 
         NoteList noteList = new NoteList();
         while(cursor.moveToNext()) {
-            TextNote textNote = new TextNote();
-            textNote.setId((cursor.getInt(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_ID))));
-            textNote.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_TITLE)));
-            textNote.setContent(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_CONTENT)));
-            textNote.setType(EnumNoteType.TEXT); // cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_TYPE)));
-            textNote.setPasswordProtected(cursor.getInt(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_PASSWORD_PROTECTED)) == 1);
-            textNote.setCreateDate(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_CREATED_DATE)));
-            noteList.add(textNote);
+            if(cursor.getInt(cursor.getColumnIndex(NotesEntry.COLUMN_TYPE)) == 1) {
+                TextNote textNote = new TextNote();
+                textNote.setId((cursor.getInt(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_ID))));
+                textNote.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_TITLE)));
+                textNote.setContent(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_CONTENT)));
+                textNote.setType(EnumNoteType.TEXT);
+                textNote.setPasswordProtected(cursor.getInt(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_PASSWORD_PROTECTED)) == 1);
+                textNote.setCreateDate(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_CREATED_DATE)));
+                noteList.add(textNote);
+            } else if(cursor.getInt(cursor.getColumnIndex(NotesEntry.COLUMN_TYPE)) == 2) {
+                PhotoNote photoNote = new PhotoNote();
+                photoNote.setId((cursor.getInt(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_ID))));
+                photoNote.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_TITLE)));
+                photoNote.setPhoto(Integer.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_CONTENT))));
+                photoNote.setType(EnumNoteType.PHOTO);
+                photoNote.setPasswordProtected(cursor.getInt(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_PASSWORD_PROTECTED)) == 1);
+                photoNote.setCreateDate(cursor.getString(cursor.getColumnIndexOrThrow(NotesEntry.COLUMN_CREATED_DATE)));
+                noteList.add(photoNote);
+            }
         }
         cursor.close();
 
